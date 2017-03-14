@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Categories : Knowledges | Fort ColdHumour</title>
+    <title>分類 : Knowledges | Fort ColdHumour</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Jasper Wu">
@@ -28,8 +28,8 @@
     <link rel="icon" href="/img/favicon.ico">
     
     
-    <link rel="apple-touch-icon" href="/img/jacman.jpg">
-    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon" href="/img/hitchhiker-guide.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/hitchhiker-guide.jpg">
     
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -40,14 +40,14 @@
 <div>
 		
 			<div id="imglogo">
-				<a href="/"><img src="/img/logo.png" alt="Fort ColdHumour" title="Fort ColdHumour"/></a>
+				<a href="/"><img src="/img/hitchhiker-guide.jpg" alt="Fort ColdHumour" title="Fort ColdHumour"/></a>
 			</div>
 			
 			<div id="textlogo">
 				<h1 class="site-name"><a href="/" title="Fort ColdHumour">Fort ColdHumour</a></h1>
 				<h2 class="blog-motto">我们一路奋战，不是为了改变世界，而是为了不让这个世界改变我们</h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -63,7 +63,7 @@
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
 						<input type="hidden" name="q" value="site:coldhumour.github.io">
 					</form>
 					
@@ -109,20 +109,26 @@
 	
 	
 	<section class="info">
-		<p> Hello ,I&#39;m Larry Page in Google. <br/>
-			This is my blog, believe it or not.</p>
+		<p> Sic Parvis Magna. <br/>
+			</p>
 	</section>
 	 
 	<div class="social-font" class="clearfix">
 		
 		
+		<a href="https://github.com/ColdHumour" target="_blank" class="icon-github" title="github"></a>
 		
 		
 		
 		
 		
 		
+		<a href="https://www.douban.com/people/ColdHumour" target="_blank" class="icon-douban" title="豆瓣"></a>
 		
+		
+		
+		
+		<a href="mailto:jasper.wuyd@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
 		
 	</div>
 			
@@ -230,7 +236,7 @@ $(document).ready(function(){
 <!-- Totop Begin -->
 
 	<div id="totop">
-	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
 	</div>
 	<script src="/js/totop.js"></script>
 
@@ -238,6 +244,35 @@ $(document).ready(function(){
 
 <!-- MathJax Begin -->
 <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 
 
 <!-- MathJax End -->
