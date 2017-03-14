@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Fort ColdHumour</title>
+  <subtitle>我们一路奋战，不是为了改变世界，而是为了不让这个世界改变我们</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://coldhumour.github.io/"/>
+  <updated>2017-02-18T11:28:43.694Z</updated>
+  <id>http://coldhumour.github.io/</id>
+  
+  <author>
+    <name>Jasper Wu</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Literature Links</title>
+    <link href="http://coldhumour.github.io/2017/02/18/Literature%20Links/"/>
+    <id>http://coldhumour.github.io/2017/02/18/Literature Links/</id>
+    <published>2017-02-18T07:38:41.000Z</published>
+    <updated>2017-02-18T11:28:43.694Z</updated>
+    
+    <content type="html"><![CDATA[<p>一些未曾来及看的或反复看的文章</p>
+<a id="more"></a>
+<ul>
+<li><p><a href="http://www.wildml.com/2015/09/implementing-a-neural-network-from-scratch/" target="_blank" rel="external">Implementing a Neural Network from Scratch in Python</a></p>
+</li>
+<li><p><a href="http://www.math.harvard.edu/library/sternberg/" target="_blank" rel="external">Dynamic System, Harvard</a></p>
+</li>
+<li><p><a href="https://gist.github.com/jdkanani/4670615" target="_blank" rel="external">Change Browser to Code Editer</a></p>
+</li>
+<li><p><a href="http://www.mit.edu/~evanchen/coursework.html" target="_blank" rel="external">Mathematics Course Notes</a></p>
+</li>
+<li><p><a href="http://www.bearcave.com/misl/misl_tech/wavelets/hurst/" target="_blank" rel="external">Estimate Hurst Exponent</a></p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一些未曾来及看的或反复看的文章&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Knowledges" scheme="http://coldhumour.github.io/categories/Knowledges/"/>
+    
+    
+  </entry>
+  
+</feed>
