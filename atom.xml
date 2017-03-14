@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://coldhumour.github.io/"/>
-  <updated>2017-02-18T11:28:43.694Z</updated>
+  <updated>2017-03-14T13:55:09.378Z</updated>
   <id>http://coldhumour.github.io/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hexo Guide</title>
+    <link href="http://coldhumour.github.io/2017/03/14/Prophet%20Guide/"/>
+    <id>http://coldhumour.github.io/2017/03/14/Prophet Guide/</id>
+    <published>2017-03-14T13:52:00.000Z</published>
+    <updated>2017-03-14T13:55:09.378Z</updated>
+    
+    <content type="html"><![CDATA[<p>这两天看到Facebook的Prophet很火，于是也想上手玩玩，试了下才发现这东西并不好装。幸好有之前配置Cython的经验，省去了很多烦恼。</p>
+<ol>
+<li><p>参见Cython安装教程，配置好Cython和Visual C++ Build Tools 2015</p>
+</li>
+<li><p>pip install pystan</p>
+</li>
+<li><p>从<a href="https://github.com/facebookincubator/prophet" target="_blank" rel="external">github/facebookincubator</a>下载prophet-master，解压，进入~/prophet-master/python，python setup.py install</p>
+</li>
+<li><p>使用方法见<a href="https://facebookincubator.github.io/prophet/" target="_blank" rel="external">官方文档</a></p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这两天看到Facebook的Prophet很火，于是也想上手玩玩，试了下才发现这东西并不好装。幸好有之前配置Cython的经验，省去了很多烦恼。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;参见Cython安装教程，配置好Cython和Visual C++ Build Tools 20
+    
+    </summary>
+    
+      <category term="Knowledges" scheme="http://coldhumour.github.io/categories/Knowledges/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Literature Links</title>
