@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://coldhumour.github.io/"/>
-  <updated>2017-03-20T14:30:00.546Z</updated>
+  <updated>2017-06-25T08:45:48.906Z</updated>
   <id>http://coldhumour.github.io/</id>
   
   <author>
@@ -14,6 +14,244 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python实现Excel-Word联合自动化</title>
+    <link href="http://coldhumour.github.io/2017/06/25/Python%E5%AE%9E%E7%8E%B0Excel-Word%E8%81%94%E5%90%88%E8%87%AA%E5%8A%A8%E5%8C%96/"/>
+    <id>http://coldhumour.github.io/2017/06/25/Python实现Excel-Word联合自动化/</id>
+    <published>2017-06-25T07:00:38.000Z</published>
+    <updated>2017-06-25T08:45:48.906Z</updated>
+    
+    <content type="html"><![CDATA[<p>这个博客搭了挺久了，本意是当技术博客写的，想记录一些日常开发中积累的技巧。Project Euler的Review是一个不错的切入点，不过我还是高估了自己，430+之后有好几题都比较卡，导致完全没法按计划推进。当中也有过调整策略的想法，该跳的要果断跳。但是光跳433就下了挺大的决心，说服自己改变准则对我这样的人来说还是有点难的。</p>
+<p>扯得有点远，回到技术博客的话题上来。这篇的主题其实早就有了腹稿，一直拖着没动。就像减肥或者跑步之类的念头，人总是时不时地会产生跟拖延症抗争的念头。总算这回努力小人打败了懒惰小人，来更一篇。</p>
+<p>先说下背景吧，前段时间工作中会面临要定期不定期地经常出一些报告，后台的业务逻辑部分早就写好了，如果对输出要求不那么高的话也能凑合着看。不过领导们嘛总归是并不懂技术，而且报告要给客户们发，更是不能指望，所以开会拍板定下来还是以Word（或者存成pdf）的形式来发。自然而然地，图表风格要用公司的BI，格式也都要统一。作为能写几行代码的人，自然不愿意每次都手动做，但是查了查又没什么通用的方案可以借鉴，到头来还是得自己开动脑筋造个轮子。</p>
+<a id="more"></a>
+<p>在最终解决方案出来之前，还是要再岔一句准备工作。前面说到后台数据都算好了，就数据本身而言输出的初步内容大致是几十张大小格式各异的表，为了防止程序中途出错，我分拆了初步输出，即大致把内容归了归类，每一块里面如果是DataFrame就直接导出csv，有特殊要求的就输出成json。这样即使数据有问题也只要重跑有错的部分就行了。</p>
+<p>然后就是最终的格式要求了。为了展示得清晰和突出重点，审阅的人提了不少很有价值的需求，不过他们自然是从Excel的角度提的，自然也就满是Excel的特殊格式，比方说边框啊合并单元格啊什么的。这种东西通过DataFrame这种东西设置起来实在太过费劲，索兴就仔仔细细做了一套工作底稿的模板，有些要算的指标以及要画的图全部设置成公式自适应，然后把输出的那堆东西按固定位置往里填，就完工了。</p>
+<p>说到Excel的输出就多说一句，我起初用的方案还是当年学的xlrd和xlwt，用起来有点吃力。后来委托实习生调研方案的时候提到了xlwings，虽然他实现的思维有点僵化，字里行间倒是透出些飘逸。于是直接去查了xlwings的文档，果然能够飘逸很多，功能什么的比那两个package强大多了，可以自由地在相对位置写入，而且可以写值、可以写公式，还不会影响调好的格式。Nice!</p>
+<p>回到Word的问题上来。因为曾经写过VBA，所以大概对Word有宏这件事情有点概念，对解决方案的大概想法是就算Python不能直接生成格式要求如此复杂的Word，底层我就用VBA来解决，然后用Python来调用VBA。至于VBA要做的事情嘛，一是因为主要麻烦的地方在图上，二是为了让实习生也能写，我就分了两步，第一步把Excel里的图都导出来，第二步在Word中从外部导入图片。</p>
+<p>我仔细想了想这个思路实现起来应该不难，就把想法跟实习生说了，委托他写一段能跑的通的代码出来。他照着这个方向研究了一阵子，提交了一份代码给我，解决了第一步，但在第二步上遇到了问题。</p>
+<p>先来说第一步，他照着我说的先写了段VBA，把图导出成图片，然后用Python来调VBA。尽管这种绕大圈子的方案最后舍弃了，但是这当中引入了一个至关重要的东西——win32com。实习生代码的流程大致是这样：xlwings写入数据 -&gt; win32com调用VBA把图片导出到固定位置。我先看了看VBA部分，似乎是通过一个什么全局的方法来实现的，其中方法的名字和xlwings以及win32com的一些方法很像，于是拆了Python部分的代码分段运行看了看中间结果，又查了查文档，发现xlwings底层是win32com，然后win32com是一堆Python调度Office文件的API。不过win32com的文档很是难用，那个阶段还是靠摸索为主。稍微费了一点功夫成功摆脱了VBA部分，可以直接用win32com导出图表了。</p>
+<p>不过最大的拦路虎还是第二步。Word VBA相关的东西本来就少，而且不像Excel那样有单元格作为天然的定位基准，想在指定位置插入或替换图片实现起来无比困难，我们讨论一番后还是否掉了这个方案。好在现在有了第一步的方案，知道了win32com是<strong>Office</strong>的接口，那么自然可以试试Word.Application里有些什么东西。这东西和Word VBA类似，有这种需求的人太少了，网上的资源比较有限，只有一些简单格式的文章生成之类。</p>
+<p>之前试图调用VBA的时候需要另存为xlsm，因此遇到了一些奇怪的固定参数，查Excel.Application的时候发现了这个：</p>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/office/ff198017.aspx" target="_blank" rel="external">Excel File Format Enum</a></li>
+</ul>
+<p>顺藤摸瓜发现了</p>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/office/ff194068.aspx" target="_blank" rel="external">Excel Object Model</a></li>
+</ul>
+<p>也是对整体的结构框架了解得更清楚了。</p>
+<p>所以，抱着试试看的心态，去找了找Word的相关文档：</p>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/office/ff837519.aspx" target="_blank" rel="external">Word Object Model</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/office/ff839952.aspx" target="_blank" rel="external">Word File Format Enum</a></li>
+</ul>
+<p>在当中发现了当时实现图片导出时用到的sht.ChartObjects十分类似的东西：doc.InlineShapes，于是就此突破。</p>
+<p>这里首先得赞美一下win32com自带的Visible模式，即可以在Word或Excel打开的时候直接看到win32com运行的结果，有点像实时调试，关键是还能<strong>撤销</strong>！所以，再分别对sht.ChartObjects和doc.InlineShapes循环选中，发现恰好就是各自文档中图的序列。其中Excel是根据图的生成时间排序的，而Word就是简单粗暴的前后顺序。这样一来，一个简单的想法自然而然就形成了：跟手工操作的时候一样，直接Excel选中某张图，复制，然后去Word里相应位置粘贴即可，只不过需要精心安排一下图片的顺序，再加上一个配置文件，就齐活了！</p>
+<p>接下来，当然是想着表格是不是也能如法炮制。Excel选中某个Range自然是再简单不过的事，但是Word就比较蛋疼了，因为选中粘贴的结果是：你会得到两张表…… </p>
+<p>替代方案一：把表格内容复制下来，然后覆盖掉Word里对应位置的内容。但是在遇到有合并单元格的时候，Word会非常诡异地不让你覆盖，而且直接报错……</p>
+<p>替代方案二：把表删了，然后粘贴。这次会遇到两个问题，第一个是Word默认delete是删掉表中内容，不删表本身，于是第二个问题是合并单元格……</p>
+<p>替代方案三：把表剪切了，然后粘贴。这次总算能粘过去了，并且只会留一张表。<strong>但，是，</strong>表的格式变了……</p>
+<p>尽管方案三也有着问题，但是最严重的问题解决了，调格式这种东西其实只是劳动密集型的试错工作。所以在花了两个下午不断的通过查文档和录制宏确定代码语法之后，终于把相应代码写进去了，其实也就几行，但是费的功夫真心不少。</p>
+<p>结局就是把所有东西拼到一起，我就可以轻松愉快地按需生成报告啦！</p>
+<p>最后还有些其他的小Tips：</p>
+<ul>
+<li><p>win32.Dispatch的方式不能自动补全代码和?，使用win32.gencache.EnsureDispatch的话就可以，这样会大大减少win32.constants的工作量。</p>
+</li>
+<li><p>在Visible的时候，如果win32com调用的操作之间相隔时间太短，操作是会相互冲突的，所以解决方案是：要么Invisible，要么sleep。</p>
+</li>
+<li><p>嵌套表格或者表格嵌套图问题都不大，配置文件写清楚就行。</p>
+</li>
+</ul>
+<p>代码示例：</p>
+<pre><code>import os
+import win32com.client as win32
+from time import sleep
+
+# Word Object Model: https://msdn.microsoft.com/en-us/library/office/ff837519.aspx
+# Excel Object Model: https://msdn.microsoft.com/en-us/library/office/ff194068.aspx
+
+# Word File Format Enum: https://msdn.microsoft.com/en-us/library/office/ff839952.aspx
+# Excel File Format Enum: https://msdn.microsoft.com/en-us/library/office/ff198017.aspx
+
+# {(sheet name, xls chart index): doc chart index}
+CHART_MAPPING = {
+    (&quot;Sheet1&quot;, 1): 1,
+    (&quot;Sheet1&quot;, 2): 2,
+    (&quot;Sheet1&quot;, 3): 3,
+
+    (&quot;Sheet2&quot;, 1): 4,
+    (&quot;Sheet2&quot;, 2): 5,
+    (&quot;Sheet2&quot;, 3): 6,
+    (&quot;Sheet2&quot;, 4): 7,
+    (&quot;Sheet2&quot;, 5): 8,
+
+    (&quot;Sheet3&quot;, 1): 9,
+    (&quot;Sheet3&quot;, 2): 10,
+    (&quot;Sheet3&quot;, 3): 11,
+    (&quot;Sheet3&quot;, 4): 12,
+    (&quot;Sheet3&quot;, 5): 13,
+    (&quot;Sheet3&quot;, 6): 14,
+    (&quot;Sheet3&quot;, 7): 15,
+
+    (&quot;Sheet4&quot;, 1): 16,
+    (&quot;Sheet4&quot;, 2): 17,
+    (&quot;Sheet4&quot;, 3): 18,
+    (&quot;Sheet4&quot;, 4): 19,
+    (&quot;Sheet4&quot;, 5): 20,
+    (&quot;Sheet4&quot;, 6): 21,
+    (&quot;Sheet4&quot;, 7): 22,
+}
+
+# {(sheet name, xls range):
+#  (doc table index sequence, doc table width %, fitcontent)}
+TABLE_MAPPING = {
+    (&quot;Sheet1&quot;, &quot;A3:C12&quot;): ((1, ), 60, True),
+    (&quot;Sheet1&quot;, &quot;A14:G17&quot;): ((2, ), 100, False),
+    (&quot;Sheet1&quot;, &quot;A53:E56&quot;): ((5, 1), 100, True),
+
+    (&quot;Sheet2&quot;, &quot;A4:F7&quot;): ((6, ), 100, False),
+    (&quot;Sheet2&quot;, &quot;A11:E20&quot;): ((7, ), 100, False),
+    (&quot;Sheet2&quot;, &quot;A25:G27&quot;): ((8, ), 110, True),
+    (&quot;Sheet2&quot;, &quot;A57:G59&quot;): ((11, ), 110, True),
+    (&quot;Sheet2&quot;, &quot;A105:L115&quot;): ((15, ), 110, True),
+
+    (&quot;Sheet3&quot;, &quot;A7:B10&quot;): ((16, 1), 100, False),
+    (&quot;Sheet3&quot;, &quot;A45:H47&quot;): ((19, ), 100, False),
+
+    (&quot;Sheet4&quot;, &quot;A4:F5&quot;): ((25, ), 80, True),
+    (&quot;Sheet4&quot;, &quot;A49:D51&quot;): ((29, ), 65, True),
+    (&quot;Sheet4&quot;, &quot;A64:D66&quot;): ((31, ), 65, True),
+}
+
+
+
+def update_doc_report(product, is_save=True, is_visible=False):
+    docfile = os.path.join(OUTPUT_PATH, product, &quot;report.docx&quot;)
+    xlsfile = os.path.join(OUTPUT_PATH, product, &quot;data_draft.xlsx&quot;)
+
+    app_wd = win32.gencache.EnsureDispatch(&quot;Word.Application&quot;)
+    app_xl = win32.gencache.EnsureDispatch(&quot;Excel.Application&quot;)
+
+    if is_visible:
+        app_wd.Visible = 1
+        app_xl.Visible = 1
+    else:
+        app_wd.Visible = 0
+        app_xl.Visible = 0
+
+    try:
+        doc = app_wd.Documents.Open(docfile)
+        print(&quot;{} is open.&quot;.format(docfile))
+        xls = app_xl.Workbooks.Open(xlsfile)
+        print(&quot;{} is open.&quot;.format(xlsfile))
+
+        # replace charts
+        for (sht_name, i_xl), i_wd in CHART_MAPPING.items():
+            print(&quot;Chart Mapping: {}-{}&quot;.format(sht_name, i_xl))
+            sht = xls.Worksheets(sht_name)
+            chart = sht.ChartObjects(i_xl)
+
+            # 也可使用chart.CopyPicture()，但图片质量较差
+            chart.Activate()
+            chart.Copy()
+            doc.InlineShapes(i_wd).Range.Paste()
+
+            if is_visible:
+                sleep(1)
+
+        # replace table contents
+        for (sht_name, rng), (idx_wd, table_width, isfitcontent) in TABLE_MAPPING.items():
+            print(&quot;Table Mapping: {}-{}&quot;.format(sht_name, rng))
+
+            sht = xls.Worksheets(sht_name)
+            xlsrange = sht.Range(rng)
+
+            table = doc.Tables(idx_wd[0])
+            for i in range(1, len(idx_wd)):
+                table = table.Tables(idx_wd[i])
+
+            table.Range.Select()
+            app_wd.Selection.Cut()
+
+            if is_visible:
+                sleep(0.5)
+
+            xlsrange.Copy()
+
+            if is_visible:
+                sleep(0.5)
+
+            app_wd.Selection.PasteSpecial()
+
+            # the raw table is cut, so table must be relocated
+            table = doc.Tables(idx_wd[0])
+            for i in range(1, len(idx_wd)):
+                table = table.Tables(idx_wd[i])
+
+            table.Rows.Alignment = win32.constants.wdAlignRowCenter
+
+            if isfitcontent:
+                table.AutoFitBehavior(win32.constants.wdAutoFitContent)
+            else:
+                table.Range.Select()
+                app_wd.Selection.Cells.DistributeWidth()
+
+            if table_width &gt; 0:
+                table.PreferredWidthType = win32.constants.wdPreferredWidthPercent
+                table.PreferredWidth = table_width
+
+            if is_visible:
+                sleep(1)
+
+        rng = xls.Worksheets(sht_name).Range(&quot;A1&quot;)
+
+        if is_save:
+            xls.Save()
+            print(&quot;{} is saved.&quot;.format(xlsfile))
+            doc.Save()
+            print(&quot;{} is saved.&quot;.format(docfile))
+    except:
+        traceback.print_exc()
+    finally:
+        try:
+            doc.Close(0)  # don&apos;t save here
+            print(&quot;{} is closed.&quot;.format(docfile))
+        except:
+            pass
+
+        try:
+            app_wd.Quit()
+            print(&quot;Word is quitted.&quot;)
+        except:
+            pass
+
+        try:
+            xls.Close(0)  # don&apos;t save here
+            print(&quot;{} is closed.&quot;.format(xlsfile))
+        except:
+            pass
+
+        try:
+            app_xl.Quit()
+            print(&quot;Excel is quitted.&quot;)
+        except:
+            pass
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这个博客搭了挺久了，本意是当技术博客写的，想记录一些日常开发中积累的技巧。Project Euler的Review是一个不错的切入点，不过我还是高估了自己，430+之后有好几题都比较卡，导致完全没法按计划推进。当中也有过调整策略的想法，该跳的要果断跳。但是光跳433就下了挺大的决心，说服自己改变准则对我这样的人来说还是有点难的。&lt;/p&gt;
+&lt;p&gt;扯得有点远，回到技术博客的话题上来。这篇的主题其实早就有了腹稿，一直拖着没动。就像减肥或者跑步之类的念头，人总是时不时地会产生跟拖延症抗争的念头。总算这回努力小人打败了懒惰小人，来更一篇。&lt;/p&gt;
+&lt;p&gt;先说下背景吧，前段时间工作中会面临要定期不定期地经常出一些报告，后台的业务逻辑部分早就写好了，如果对输出要求不那么高的话也能凑合着看。不过领导们嘛总归是并不懂技术，而且报告要给客户们发，更是不能指望，所以开会拍板定下来还是以Word（或者存成pdf）的形式来发。自然而然地，图表风格要用公司的BI，格式也都要统一。作为能写几行代码的人，自然不愿意每次都手动做，但是查了查又没什么通用的方案可以借鉴，到头来还是得自己开动脑筋造个轮子。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Knowledges" scheme="http://coldhumour.github.io/categories/Knowledges/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>The Eudaemonic Pie</title>
